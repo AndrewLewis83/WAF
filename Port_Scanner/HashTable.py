@@ -1,5 +1,7 @@
 # this hashing table is based off of a YouTube tutorial that I found at https://youtu.be/zHi5v78W1f0.
-import datetime
+import re
+import time
+
 class Node:
     def __init__(self, key, value):
         self.key = key
@@ -15,8 +17,13 @@ class HashTable:
 	
 	def hash(self, key):
 		hashsum = 0
-		splitKey = key[0].split('.')
-		hashsum += int(splitKey[3])
+		try:
+			splitKey = key.split('.')
+			splitKey[3].strip("\"")
+			hashsum += int(splitKey[3])
+		except ValueError:
+   			pass      # or whatever
+					
 		hashsum = hashsum % self.capacity
 		return hashsum
 		
@@ -52,7 +59,7 @@ class HashTable:
 			node = node.next
 		if node is None:
 			return False
-		elif datetime.datetime.now().timestamp() - node.value[1] > 301:
+		elif time.time() - node.value > 301:
 			self.size -= 1
 			result = node.value
 			if prev is None:
